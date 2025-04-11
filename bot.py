@@ -2,7 +2,7 @@ import os
 import cv2
 import mediapipe as mp
 from telegram import Update
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
+from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
 BOT_TOKEN = os.getenv("7581890451:AAGqMTghmFGQZku0Ei9wiQvgrvgZ3AstipA")
 USER_ID = int(os.getenv("179255420"))  # твой Telegram ID
@@ -58,11 +58,13 @@ def handle_photo(update: Update, context: CallbackContext):
             os.remove("temp.jpg")
 
 def main():
-    updater = Updater(BOT_TOKEN, use_context=True)
-    dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.photo, handle_photo))  # Слушаем фото
-    updater.start_polling()
-    updater.idle()
+    # Создаем объект Application
+    application = Application.builder().token(BOT_TOKEN).build()
+    
+    # Добавляем обработчик сообщений
+    application.add_handler(MessageHandler(filters.PHOTO, handle_photo))  # Слушаем фото
+    
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
