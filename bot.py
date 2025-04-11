@@ -5,7 +5,8 @@ from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
 BOT_TOKEN = os.getenv("7581890451:AAGqMTghmFGQZku0Ei9wiQvgrvgZ3AstipA")
-USER_ID = int(os.getenv("179255420"))  # твой Telegram ID
+# USER_ID = int(os.getenv("179255420"))  # твой Telegram ID
+USER_ID = int(os.getenv("USER_ID"))  # Используем переменную окружения USER_ID
 TARGET_PHOTO_1 = "target_1.jpg"  # Первое эталонное фото
 TARGET_PHOTO_2 = "target_2.jpg"  # Второе эталонное фото
 
