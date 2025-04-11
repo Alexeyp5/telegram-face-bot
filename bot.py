@@ -21,13 +21,13 @@ target_image_1 = cv2.imread(TARGET_PHOTO_1)
 target_image_2 = cv2.imread(TARGET_PHOTO_2)
 
 # Преобразуем эталонные изображения в формат, удобный для сравнения
-def preprocess_image(image):
+async def preprocess_image(image):
     # Преобразуем в RGB
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image_rgb
 
 # Функция для обнаружения лиц на изображении
-def detect_faces(image):
+async def detect_faces(image):
     image_rgb = preprocess_image(image)
     results = face_detection.process(image_rgb)
     
@@ -36,7 +36,7 @@ def detect_faces(image):
         return True
     return False
 
-def handle_photo(update: Update, context: CallbackContext):
+async def handle_photo(update: Update, context: CallbackContext):
     # Получаем фото из группы
     photo_file = update.message.photo[-1].get_file()
     photo_file.download("temp.jpg")
@@ -59,7 +59,7 @@ def handle_photo(update: Update, context: CallbackContext):
         if os.path.exists("temp.jpg"):
             os.remove("temp.jpg")
 
-def main():
+async def main():
     # Создаем объект Application
     application = Application.builder().token(BOT_TOKEN).build()
     
