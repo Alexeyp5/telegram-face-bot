@@ -4,18 +4,15 @@ import mediapipe as mp
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 import asyncio
-import sys
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 USER_ID = int(os.getenv("USER_ID"))
 TARGET_PHOTO_1 = "target_1.jpg"
 TARGET_PHOTO_2 = "target_2.jpg"
 
-# Инициализация MediaPipe
 mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.2)
 
-# Загружаем эталонные изображения
 target_image_1 = cv2.imread(TARGET_PHOTO_1)
 target_image_2 = cv2.imread(TARGET_PHOTO_2)
 
@@ -36,7 +33,6 @@ async def handle_photo(update: Update, context: CallbackContext):
         if await detect_faces(unknown_image):
             match_1 = await detect_faces(target_image_1)
             match_2 = await detect_faces(target_image_2)
-
             if match_1 or match_2:
                 await context.bot.send_photo(chat_id=USER_ID, photo=open("temp.jpg", "rb"))
     except Exception as e:
@@ -49,18 +45,12 @@ async def run_bot():
     application = Application.builder().token(BOT_TOKEN).build()
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     print("Бот запущен")
-    await application.run_polling()  # <-- ЭТО ЗАМЕНЯЕТ initialize/start/idle
+    await application.run_polling()
 
 if __name__ == "__main__":
-    if sys.platform == "win32":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
     try:
-        asyncio.run(run_bot())
+        loop = asyncio.get_event_loop()
+        loop.create_task(run_bot())
+        loop.run_forever()
     except RuntimeError as e:
-        if "already running" in str(e):
-            loop = asyncio.get_event_loop()
-            loop.create_task(run_bot())
-            loop.run_forever()
-        else:
-            raise
+        print("Ошибка запуска event loop:", e)
