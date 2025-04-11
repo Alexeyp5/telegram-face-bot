@@ -48,11 +48,8 @@ async def handle_photo(update: Update, context: CallbackContext):
 async def run_bot():
     application = Application.builder().token(BOT_TOKEN).build()
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-    await application.initialize()
-    await application.start()
     print("Бот запущен")
-    await application.updater.start_polling()
-    await application.updater.idle()
+    await application.run_polling()  # <-- ЭТО ЗАМЕНЯЕТ initialize/start/idle
 
 if __name__ == "__main__":
     if sys.platform == "win32":
