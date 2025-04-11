@@ -4,7 +4,8 @@ import mediapipe as mp
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
-BOT_TOKEN = os.getenv("7581890451:AAGqMTghmFGQZku0Ei9wiQvgrvgZ3AstipA")
+#BOT_TOKEN = os.getenv("7581890451:AAGqMTghmFGQZku0Ei9wiQvgrvgZ3AstipA")
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # Получаем токен из переменной окружения
 # USER_ID = int(os.getenv("179255420"))  # твой Telegram ID
 USER_ID = int(os.getenv("USER_ID"))  # Используем переменную окружения USER_ID
 TARGET_PHOTO_1 = "target_1.jpg"  # Первое эталонное фото
