@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: telegram-face-bot
+    env: python
+    plan: free
+    buildCommand: ""
+    startCommand: bash start.sh
+    envVars:
+      - key: BOT_TOKEN
+        value: "вставь_тут_токен"
+      - key: USER_ID
+        value: "вставь_тут_ID"
