@@ -1,3 +1,4 @@
 python-telegram-bot==13.15
+dlib==19.22.0
 face_recognition
 opencv-python
