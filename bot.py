@@ -4,9 +4,7 @@ import mediapipe as mp
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
-#BOT_TOKEN = os.getenv("7581890451:AAGqMTghmFGQZku0Ei9wiQvgrvgZ3AstipA")
 BOT_TOKEN = os.getenv("BOT_TOKEN")  # Получаем токен из переменной окружения
-# USER_ID = int(os.getenv("179255420"))  # твой Telegram ID
 USER_ID = int(os.getenv("USER_ID"))  # Используем переменную окружения USER_ID
 TARGET_PHOTO_1 = "target_1.jpg"  # Первое эталонное фото
 TARGET_PHOTO_2 = "target_2.jpg"  # Второе эталонное фото
@@ -28,7 +26,7 @@ async def preprocess_image(image):
 
 # Функция для обнаружения лиц на изображении
 async def detect_faces(image):
-    image_rgb = preprocess_image(image)
+    image_rgb = await preprocess_image(image)
     results = face_detection.process(image_rgb)
     
     # Если лица найдены, возвращаем их
@@ -36,29 +34,31 @@ async def detect_faces(image):
         return True
     return False
 
+# Обработчик фотографии
 async def handle_photo(update: Update, context: CallbackContext):
     # Получаем фото из группы
-    photo_file = update.message.photo[-1].get_file()
-    photo_file.download("temp.jpg")
+    photo_file = await update.message.photo[-1].get_file()  # используем await для асинхронного получения файла
+    await photo_file.download("temp.jpg")  # используем await для асинхронного скачивания фото
 
     try:
         unknown_image = cv2.imread("temp.jpg")
         
         # Проверяем, есть ли на изображении лица, используя MediaPipe
-        if detect_faces(unknown_image):
+        if await detect_faces(unknown_image):
             # Сравниваем изображение с эталонами (по простому методу, чтобы получить основной результат)
-            match_1 = detect_faces(target_image_1)
-            match_2 = detect_faces(target_image_2)
+            match_1 = await detect_faces(target_image_1)
+            match_2 = await detect_faces(target_image_2)
             
             if match_1 or match_2:
                 # Отправляем фото в личку
-                context.bot.send_photo(chat_id=USER_ID, photo=open("temp.jpg", "rb"))
+                await context.bot.send_photo(chat_id=USER_ID, photo=open("temp.jpg", "rb"))
     except Exception as e:
         print("Ошибка:", e)
     finally:
         if os.path.exists("temp.jpg"):
             os.remove("temp.jpg")
 
+# Главная функция
 async def main():
     # Создаем объект Application
     application = Application.builder().token(BOT_TOKEN).build()
@@ -66,7 +66,9 @@ async def main():
     # Добавляем обработчик сообщений
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))  # Слушаем фото
     
-    application.run_polling()
+    # Запуск бота
+    await application.run_polling()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
