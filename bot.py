@@ -34,11 +34,11 @@ async def detect_faces(image):
         return True
     return False
 
-# Обработчик фотографии
+# Обработчик фото
 async def handle_photo(update: Update, context: CallbackContext):
     # Получаем фото из группы
-    photo_file = await update.message.photo[-1].get_file()  # используем await для асинхронного получения файла
-    await photo_file.download("temp.jpg")  # используем await для асинхронного скачивания фото
+    photo_file = await update.message.photo[-1].get_file()
+    await photo_file.download("temp.jpg")  # Асинхронно скачиваем фото
 
     try:
         unknown_image = cv2.imread("temp.jpg")
@@ -56,9 +56,9 @@ async def handle_photo(update: Update, context: CallbackContext):
         print("Ошибка:", e)
     finally:
         if os.path.exists("temp.jpg"):
-            os.remove("temp.jpg")
+            os.remove("temp.jpg")  # Удаляем временный файл
 
-# Главная функция
+# Основная функция
 async def main():
     # Создаем объект Application
     application = Application.builder().token(BOT_TOKEN).build()
@@ -66,9 +66,8 @@ async def main():
     # Добавляем обработчик сообщений
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))  # Слушаем фото
     
-    # Запуск бота
-    await application.run_polling()
+    await application.run_polling()  # Запуск бота
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(main())  # Запускаем main() с asyncio
+    asyncio.get_event_loop().run_until_complete(main())  # Запускаем main() с текущим циклом событий
