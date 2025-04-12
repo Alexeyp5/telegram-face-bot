@@ -1,3 +1,5 @@
-opencv-python-headless
-mediapipe
-python-telegram-bot
+python-telegram-bot==20.3
+face_recognition
+dlib
+opencv-python
+numpy
